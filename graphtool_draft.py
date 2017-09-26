@@ -122,17 +122,30 @@ if __name__ == "__main__":
     # del vb
     # _vb = sorted(_vb, key=lambda x: -x[1])
     # pprint(_vb[:10])
-    ###PAGE RANK
-    print("Running pagerank")
-    pr = gt.pagerank(GRAFO)
-    pr = list(pr)
-    print("Printing pagerank")
-    _pr = list()
+    ##EIGENVECTOR
+    print("Running eigen")
+    ee, x = gt.eigenvector(GRAFO)
+    print("Printing eigen")
+    _ee = list()
     index = 0
-    for v in pr:
-        _pr.append((index, v))
+    for v in x:
+        _ee.append((index,v))
         index+=1
-    del pr
-    _pr = sorted(_pr, key=lambda x: -x[1])
-    pprint(_pr[:10])
+    del x
+    _ee = sorted(_ee, key=lambda x: -x[1])
+    pprint(ee)
+    pprint(_ee[:10])
+    ###PAGE RANK
+    # print("Running pagerank")
+    # pr = gt.pagerank(GRAFO)
+    # pr = list(pr)
+    # print("Printing pagerank")
+    # _pr = list()
+    # index = 0
+    # for v in pr:
+    #     _pr.append((index, v))
+    #     index+=1
+    # del pr
+    # _pr = sorted(_pr, key=lambda x: -x[1])
+    # pprint(_pr[:10])
     
