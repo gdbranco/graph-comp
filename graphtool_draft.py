@@ -97,6 +97,32 @@ if __name__ == "__main__":
     print("Adding data to graph")
     GRAFO = gt.Graph(directed=False)
     GRAFO.add_edge_list(REDE)
+    # print("#Running closeness")
+    # vc = gt.closeness(GRAFO)
+    # vc = list(vc)
+    # _vc = list()
+    # print("#Printing closeness")
+    # index = 0
+    # for v in vc:
+    #     _vc.append((index,v))
+    #     index+=1
+    # del vc
+    # _vc = sorted(_vc, key=lambda x: -x[1])
+    # pprint(_vc[:10])
+    ###BETWEENNESS
+    # print("#Running betweenness")
+    # vb, eb = gt.betweenness(GRAFO)
+    # vb = list(vb)
+    # _vb = list()
+    # print("#Printing betweenness")
+    # index = 0
+    # for v in vb:
+    #     _vb.append((index,v))
+    #     index+=1
+    # del vb
+    # _vb = sorted(_vb, key=lambda x: -x[1])
+    # pprint(_vb[:10])
+    ###PAGE RANK
     print("Running pagerank")
     pr = gt.pagerank(GRAFO)
     pr = list(pr)
