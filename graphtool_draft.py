@@ -6,97 +6,86 @@ import matplotlib
 import graph_tool.all as gt
 import utils as ut
 from pprint import pprint
-# from pprint import pprint
-# from time import time
-
-
-def sort_nodes(tupla):
-    """
-    Sort nodes based on score
-    """
-    vertex = tupla[1]
-    return -vertex[0], -vertex[1]
-
-def score_func(network):
-    """
-    Devolve o score de cada no na network
-    """
-    return dict([(v[0], len(v[1])) for v in network.items()])
-
-def bfs(graph, start):
-    """
-    Roda BFS e devolve uma floresta
-    """
-    queue = list()
-    visited = set()
-    queue.append(start)
-    forest_edges = list()
-    while queue:
-        node = queue.pop(0)
-        visited.add(node)
-        for adjacent in graph[node]:
-            if (adjacent, node) not in forest_edges and (node, adjacent) not in forest_edges:
-                forest_edges.append((node, adjacent))
-            if adjacent not in visited:
-                visited.add(adjacent)
-                if adjacent in graph:
-                    queue.append(adjacent)
-    return forest_edges, list(visited)
-
-# retornar o set de visitados
-# pegar o score
-# edges
-
-def sort_forests(forests):
-    """
-    Ordena a floresta pelo tamanho da mesma
-    """
-    return -len(forests)
-
-def alg(network):
-    """
-    Run BFS for the entire network
-    """
-    num_nodes = len(list(network))
-    output = {}
-    visited_nodes = set()
-    score_table = score_func(network)
-    for node in network.keys():
-        if node not in visited_nodes:
-            # busco a floresta (e atualizo lista de nos visitados)
-            forest_edges, forest = bfs(network, node)
-            visited_nodes.update(forest)
-
-            # ordenar a floresta pelo score de cada no
-            forest = [(node, score_table[node]) for node in forest]
-            forest = sorted(forest, key=lambda x: -x[1])
-            ## calcubBFSlar score
-            ##SCORE BASEADO NO GRAPH-TOOL
-            grafo = gt.Graph(directed=False)
-            pprint(forest_edges)
-            grafo.add_edge_list(forest_edges)
-            for node in grafo.vertices():
-                if node.out_degree() == 0:
-                    grafo.remove_vertex(node)
-            gt.graph_draw(grafo, vertex_text=grafo.vertex_index, vertex_font_size=18, output_size=(1000,1000))
-            # for v in vp:
-            #     print (v)
-            #SCORE NOSSO
-            forest_size = len(forest)
-            for node, score in forest:
-                score = score * (forest_size / num_nodes)
-                output[node] = score
-                forest_size -= 1
-    return sorted(output.items(), key=lambda x: -x[1])
-
 
 if __name__ == "__main__":
-    NET_NAME = "real2";
-    print("Read all nodes")
-    REDE = ut.import_netGT(NET_NAME)
-    print("Adding data to graph")
     GRAFO = gt.Graph(directed=False)
-    GRAFO.add_edge_list(REDE)
+    v = list()
+    e = list()
+    for i in range(0,9):
+        v.append(GRAFO.add_vertex())
+    e.append(GRAFO.add_edge(v[0],v[1]))
+    e.append(GRAFO.add_edge(v[0],v[2]))
+    e.append(GRAFO.add_edge(v[1],v[2]))
+    e.append(GRAFO.add_edge(v[1],v[5]))
+    e.append(GRAFO.add_edge(v[2],v[3]))
+    e.append(GRAFO.add_edge(v[2],v[4]))
+    e.append(GRAFO.add_edge(v[2],v[5]))
+    e.append(GRAFO.add_edge(v[2],v[6]))
+    e.append(GRAFO.add_edge(v[5],v[6]))
+    e.append(GRAFO.add_edge(v[5],v[8]))
+    e.append(GRAFO.add_edge(v[6],v[8]))
+    e.append(GRAFO.add_edge(v[6],v[7]))
+    e.append(GRAFO.add_edge(v[6],v[4]))
+    e.append(GRAFO.add_edge(v[6],v[3]))
+    e.append(GRAFO.add_edge(v[3],v[7]))
+    e.append(GRAFO.add_edge(v[3],v[4]))
+    e.append(GRAFO.add_edge(v[4],v[7]))
+    print("PAGE RANK")
+    pr = gt.pagerank(GRAFO)
+    _pr = list()
+    index = 0
+    for v in pr:
+        _pr.append((index, v))
+        index+=1
+    del pr
+    _pr = sorted(_pr, key=lambda x: -x[1])
+    pprint(_pr)
+    print("BEETWENNESS")
+    vb, eb = gt.betweenness(GRAFO)
+    _vb = list()
+    index = 0
+    for v in vb:
+        _vb.append((index,v))
+        index+=1
+    del vb
+    _vb = sorted(_vb, key=lambda x:-x[1])
+    pprint(_vb)
+    print("CLOSENESS")
+    vc = gt.closeness(GRAFO)
+    _vc = list()
+    index = 0
+    for v in vc:
+        _vc.append((index,v))
+        index+=1
+    del vc
+    _vc = sorted(_vc,key=lambda x:-x[1])
+    pprint(_vc)
+    print("EIGENVECTOR")
+    evalue, evector = gt.eigenvector(GRAFO)
+    _evector = list()
+    index = 0
+    for v in evector:
+        _evector.append((index,v))
+        index+=1
+    del evector
+    _evector = sorted(_evector, key=lambda x:-x[1])
+    pprint(_evector)
+    print("KATZ")
+    kv = gt.katz(GRAFO)
+    _kv = list()
+    index = 0
+    for v in kv:
+        _kv.append((index,v))
+        index+=1
+    del kv
+    _kv = sorted(_kv, key=lambda x:-x[1])
+    pprint(_kv)
+    # NET_NAME = "real2";
+    # print("Read all nodes")
+    # REDE = ut.import_netGT(NET_NAME)
+    # print("Adding data to graph")
+    # GRAFO = gt.Graph(directed=False)
+    # GRAFO.add_edge_list(REDE)
     # print("#Running closeness")
     # vc = gt.closeness(GRAFO)
     # vc = list(vc)
@@ -123,18 +112,18 @@ if __name__ == "__main__":
     # _vb = sorted(_vb, key=lambda x: -x[1])
     # pprint(_vb[:10])
     ##EIGENVECTOR
-    print("Running eigen")
-    ee, x = gt.eigenvector(GRAFO)
-    print("Printing eigen")
-    _ee = list()
-    index = 0
-    for v in x:
-        _ee.append((index,v))
-        index+=1
-    del x
-    _ee = sorted(_ee, key=lambda x: -x[1])
-    pprint(ee)
-    pprint(_ee[:10])
+    # print("Running eigen")
+    # ee, x = gt.eigenvector(GRAFO)
+    # print("Printing eigen")
+    # _ee = list()
+    # index = 0
+    # for v in x:
+    #     _ee.append((index,v))
+    #     index+=1
+    # del x
+    # _ee = sorted(_ee, key=lambda x: -x[1])
+    # pprint(ee)
+    # pprint(_ee[:10])
     ###PAGE RANK
     # print("Running pagerank")
     # pr = gt.pagerank(GRAFO)
